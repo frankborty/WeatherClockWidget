@@ -36,7 +36,6 @@
     <string name="language_english">English</string>
     <string name="appearance_title">Appearance</string>
     <string name="preview_label">Preview</string>
-    <string name="preview_hint">Updates as you change the options.</string>
     <string name="background_color_label">Background color</string>
     <string name="background_opacity_label">Opacity</string>
     <string name="opacity_value_format">%1$d%%</string>
