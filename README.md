@@ -1,51 +1,53 @@
+[Italiano](README.it.md) | English
+
 # WeatherClockWidget
 
-Widget per la schermata Home di Android che combina orologio, condizioni meteo correnti e previsioni. L'app include una schermata di configurazione con anteprima dal vivo dell'aspetto del widget.
+Android home-screen widget that combines a clock, current weather conditions and forecasts. The app includes a settings screen with a live preview of the widget appearance.
 
-Il progetto è sviluppato in Kotlin, senza librerie di terze parti per la UI oltre ai componenti AndroidX e Material.
+The project is written in Kotlin, with no third-party UI libraries beyond AndroidX and Material components.
 
-## Stato del progetto
+## Project status
 
-Questo repository è un esperimento personale realizzato con un approccio di vibe coding: sviluppo rapido e iterativo assistito da modelli linguistici, con verifica manuale del risultato. Non è un prodotto commerciale, non è pensato per la produzione e non dispone di un processo di supporto.
+This repository is a personal experiment built with a vibe-coding approach: rapid, iterative development assisted by language models, with manual verification of the result. It is not a commercial product, is not intended for production use and has no support process.
 
-Il software viene fornito così com'è, senza garanzie di correttezza, stabilità o idoneità a uno scopo specifico. Non sono previsti supporto, tempi di risposta o impegno a correggere problemi.
+The software is provided as is, without warranties of correctness, stability or fitness for a particular purpose. No support, response time or commitment to fix issues is provided.
 
-Issue, segnalazioni e pull request possono non essere lette, gestite o accettate. Chi rileva un bug o ha bisogno di una modifica è invitato a creare un fork del repository, applicare la correzione nel proprio fork e mantenerlo autonomamente.
+Issues, reports and pull requests may not be read, handled or accepted. If you find a bug or need a change, fork the repository, apply the fix in your own fork and maintain it yourself.
 
-## Funzionalità
+## Features
 
-- Widget ridimensionabile con layout dedicati in base allo spazio disponibile:
-  - 1x1: orologio in alto e meteo in basso
-  - 2x1: orologio, icona e temperatura
-  - 4x1: orologio a sinistra, meteo allineato a destra
-  - 2x2: orologio, temperatura e icone delle previsioni
-  - 4x2: orologio, data, località, min/max e striscia delle previsioni
-  - dimensione massima: layout esteso con otto slot di previsione
-- Orologio in grassetto, con formato 12 o 24 ore.
-- Tap sull'orologio: apertura dell'app Orologio del dispositivo, con fallback su più app comuni.
-- Tap su qualsiasi altra area del widget: apertura delle impostazioni dell'app.
-- Previsioni per le prossime ore oppure per i prossimi giorni, selezionabili nelle impostazioni.
-- Previsioni giornaliere con temperatura minima e massima.
-- Interfaccia disponibile in italiano e inglese, con selettore Sistema / Italiano / English. Per impostazione predefinita segue la lingua di sistema.
-- Ricerca città sempre disponibile, con suggerimenti automatici mentre si digita; selezionando un risultato la località viene salvata automaticamente.
-- Interruttore Posizione GPS: imposta località e coordinate dalla posizione del dispositivo. Disattivandolo, la città corrente resta come località manuale. L'attivazione del GPS non forza un aggiornamento meteo.
-- Colore di sfondo personalizzabile con selettore HSV, campioni predefiniti e codice esadecimale.
-- Opacità dello sfondo regolabile.
-- Anteprima dal vivo nelle impostazioni, aggiornata al variare di colore, opacità, formato ora e modalità previsioni.
-- Cache locale dell'ultimo aggiornamento riuscito, mostrata anche in caso di errore di rete.
-- Aggiornamento periodico tramite WorkManager e aggiornamento manuale dall'app.
-- Messaggi di stato mostrati solo in caso di errore; gli aggiornamenti riusciti non aggiungono righe di stato.
+- Resizable widget with dedicated layouts based on the available space:
+  - 1x1: clock on top and weather below
+  - 2x1: clock, icon and temperature
+  - 4x1: clock on the left, weather right-aligned
+  - 2x2: clock, temperature and forecast icons
+  - 4x2: clock, date, location, min/max and forecast strip
+  - maximum size: extended layout with eight forecast slots
+- Bold clock with 12-hour or 24-hour format.
+- Clock tap: opens the device Clock app, with fallbacks for common apps.
+- Tap anywhere else on the widget: opens the app settings.
+- Forecasts for the next hours or the next days, selectable in the settings.
+- Daily forecasts with minimum and maximum temperatures.
+- Italian and English interface, with a System / Italiano / English selector. Defaults to the system language.
+- Always-visible city search with automatic suggestions while typing; selecting a result saves the location automatically.
+- GPS location switch: sets the location and coordinates from the device position. Turning it off keeps the current city as the manual location. Enabling GPS does not force a weather refresh.
+- Custom background color with HSV picker, preset swatches and hex code.
+- Adjustable background opacity.
+- Live preview in the settings, updated as color, opacity, time format and forecast mode change.
+- Local cache of the last successful update, also shown when the network fails.
+- Periodic updates through WorkManager and manual refresh from the app.
+- Status messages shown only on errors; successful updates do not add status lines.
 
-## Requisiti
+## Requirements
 
-- Android API 37 o superiore.
+- Android API 37 or higher.
 - JDK 17.
-- Android Studio recente con Android SDK Platform 37 installato.
-- Gradle Wrapper incluso nel repository.
+- A recent Android Studio with Android SDK Platform 37 installed.
+- The Gradle Wrapper included in the repository.
 
-## Compilazione
+## Building
 
-Clonare il repository e usare il wrapper Gradle:
+Clone the repository and use the Gradle wrapper:
 
 ```bash
 git clone https://github.com/frankborty/WeatherClockWidget.git
@@ -53,52 +55,52 @@ cd WeatherClockWidget
 ./gradlew assembleDebug
 ```
 
-Su Windows:
+On Windows:
 
 ```powershell
 .\gradlew.bat assembleDebug
 ```
 
-L'APK di debug viene generato in:
+The debug APK is generated at:
 
 ```text
 app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Il file `local.properties` con il percorso dell'SDK viene generato automaticamente da Android Studio e non è versionato.
+The `local.properties` file containing the SDK path is generated automatically by Android Studio and is not versioned.
 
-## Struttura del progetto
+## Project structure
 
 ```text
 app/src/main/java/it/frankborty/weatherclockwidget/
-  MainActivity.kt              Schermata di configurazione, anteprima e stato
-  data/                        Preferenze, client Open-Meteo, località, repository
-  domain/                      Modelli di meteo corrente, orario e giornaliero
-  widget/                      Provider, renderer RemoteViews, risoluzione dimensioni
-  work/                        Aggiornamenti periodici con WorkManager
+  MainActivity.kt              Settings screen, preview and status
+  data/                        Preferences, Open-Meteo client, location, repository
+  domain/                      Current, hourly and daily weather models
+  widget/                      Provider, RemoteViews renderer, size resolution
+  work/                        Periodic updates with WorkManager
 ```
 
-Le risorse del widget si trovano in `app/src/main/res/layout` e gli stili grafici in `app/src/main/res/drawable`.
+Widget resources are in `app/src/main/res/layout`, and graphic styles are in `app/src/main/res/drawable`.
 
-## Dati e privacy
+## Data and privacy
 
-I dati meteo provengono da [Open-Meteo](https://open-meteo.com/) e non richiedono chiavi API. Le coordinate della località selezionata vengono inviate ai servizi Open-Meteo per ottenere meteo e ricerca località.
+Weather data comes from [Open-Meteo](https://open-meteo.com/) and does not require API keys. The coordinates of the selected location are sent to Open-Meteo services to retrieve weather data and search for locations.
 
-L'app non include analytics, telemetria o pubblicità. Località, preferenze e ultimo snapshot meteo sono salvati localmente sul dispositivo tramite `SharedPreferences`.
+The app does not include analytics, telemetry or advertising. Location, preferences and the last weather snapshot are stored locally on the device through `SharedPreferences`.
 
-Permessi dichiarati:
+Declared permissions:
 
-- `INTERNET`: recupero dei dati meteo e della ricerca località.
-- `ACCESS_COARSE_LOCATION`: località approssimativa in modalità GPS.
-- `ACCESS_FINE_LOCATION`: località precisa in modalità GPS.
+- `INTERNET`: fetching weather data and searching for locations.
+- `ACCESS_COARSE_LOCATION`: approximate location in GPS mode.
+- `ACCESS_FINE_LOCATION`: precise location in GPS mode.
 
-## Limitazioni note
+## Known limitations
 
-- Il progetto non include una suite di test automatica.
-- Il layout scelto dipende dalle dimensioni in dp riportate dal launcher e può variare tra dispositivi.
-- La disponibilità dell'app Orologio dipende dalle app installate sul dispositivo.
-- Il progetto è ottimizzato per un uso personale e non per la distribuzione pubblica.
+- The project does not include an automated test suite.
+- The selected layout depends on the dp size reported by the launcher and may vary between devices.
+- Clock app availability depends on the apps installed on the device.
+- The project is optimized for personal use, not for public distribution.
 
-## Licenza
+## License
 
-Il progetto è rilasciato nel pubblico dominio secondo la licenza Unlicense. Chiunque può usarlo, modificarlo, distribuirlo o venderlo senza obbligo di attribuzione. Il software viene fornito senza garanzie e senza alcuna responsabilità per gli autori. Il testo completo è disponibile nel file `LICENSE`.
+The project is released into the public domain under the Unlicense. Anyone may use, modify, distribute or sell it without attribution. The software is provided without warranties and without any liability for the authors. The full text is available in the `LICENSE` file.
