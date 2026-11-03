@@ -100,4 +100,4 @@ Permessi dichiarati:
 
 ## Licenza
 
-Non è stata definita una licenza. Il codice è pubblicato a scopo sperimentale e viene fornito così com'è.
+Il progetto è rilasciato nel pubblico dominio secondo la licenza Unlicense. Chiunque può usarlo, modificarlo, distribuirlo o venderlo senza obbligo di attribuzione. Il software viene fornito senza garanzie e senza alcuna responsabilità per gli autori. Il testo completo è disponibile nel file `LICENSE`.
