@@ -54,11 +54,16 @@ class OpenMeteoClient(
     private val readTimeoutMillis: Int = DEFAULT_TIMEOUT_MILLIS
 ) {
 
-    suspend fun searchLocations(query: String): List<GeocodingResult> =
+    suspend fun searchLocations(
+        query: String,
+        language: String = "en"
+    ): List<GeocodingResult> =
         withContext(Dispatchers.IO) {
             val encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.name())
+            val encodedLanguage = URLEncoder.encode(language, StandardCharsets.UTF_8.name())
             val url = URL(
-                "$GEOCODING_BASE_URL?name=$encodedQuery&count=10&language=it&format=json"
+                "$GEOCODING_BASE_URL?name=$encodedQuery&count=10" +
+                    "&language=$encodedLanguage&format=json"
             )
             parseGeocoding(get(url))
         }

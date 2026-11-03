@@ -108,7 +108,7 @@ object WeatherWidgetRenderer {
             }
 
             WidgetSize.LARGE -> {
-                views.setTextViewText(R.id.widget_date, formatDate(snapshot))
+                views.setTextViewText(R.id.widget_date, formatDate(context, snapshot))
                 views.setTextViewText(
                     R.id.widget_location,
                     locationName(context, state, includeError = true)
@@ -126,7 +126,7 @@ object WeatherWidgetRenderer {
             }
 
             WidgetSize.XLARGE -> {
-                views.setTextViewText(R.id.widget_date, formatDate(snapshot))
+                views.setTextViewText(R.id.widget_date, formatDate(context, snapshot))
                 views.setTextViewText(
                     R.id.widget_location,
                     locationName(context, state, includeError = true)
@@ -251,7 +251,7 @@ object WeatherWidgetRenderer {
         return when (forecastMode) {
             ForecastMode.HOURLY -> upcomingHours(snapshot).map { hour ->
                 ForecastItem(
-                    label = formatHourTime(hour.time, timeFormat),
+                    label = formatHourTime(hour.time, timeFormat, appLocale(context)),
                     temperature = context.getString(
                         R.string.widget_temperature_format,
                         hour.temperatureCelsius
@@ -264,13 +264,14 @@ object WeatherWidgetRenderer {
             }
 
             ForecastMode.DAILY -> upcomingDays(snapshot).mapIndexed { index, day ->
+                val locale = appLocale(context)
                 val date = parseDate(day.date)
                 val label = if (index == 0) {
                     context.getString(R.string.widget_today)
                 } else {
                     date
-                        ?.format(DateTimeFormatter.ofPattern("EEE", Locale.ITALIAN))
-                        ?.replaceFirstChar { it.titlecase(Locale.ITALIAN) }
+                        ?.format(DateTimeFormatter.ofPattern("EEE", locale))
+                        ?.replaceFirstChar { it.titlecase(locale) }
                         ?: day.date
                 }
                 val minText = context.getString(
@@ -344,7 +345,7 @@ object WeatherWidgetRenderer {
         snapshot: WeatherSnapshot?
     ): String {
         val location = locationName(context, state, includeError = false)
-        val date = formatDate(snapshot)
+        val date = formatDate(context, snapshot)
         val base = context.getString(R.string.widget_location_date_format, location, date)
 
         if (state.lastError == null) return base
@@ -356,18 +357,19 @@ object WeatherWidgetRenderer {
         )
     }
 
-    private fun formatDate(snapshot: WeatherSnapshot?): String {
+    private fun formatDate(context: Context, snapshot: WeatherSnapshot?): String {
+        val locale = appLocale(context)
         val zone = snapshot?.timezone?.let { timezone ->
             runCatching { ZoneId.of(timezone) }.getOrNull()
         } ?: ZoneId.systemDefault()
 
         val text = LocalDate.now(zone).format(
-            DateTimeFormatter.ofPattern("EEEE d MMMM", Locale.ITALIAN)
+            DateTimeFormatter.ofPattern("EEEE d MMMM", locale)
         )
 
         return text.split(' ')
             .joinToString(" ") { word ->
-                word.replaceFirstChar { it.titlecase(Locale.ITALIAN) }
+                word.replaceFirstChar { it.titlecase(locale) }
             }
     }
 
@@ -393,11 +395,14 @@ object WeatherWidgetRenderer {
         }
     }
 
-    private fun formatHourTime(value: String, timeFormat: TimeFormat): String {
+    private fun formatHourTime(value: String, timeFormat: TimeFormat, locale: Locale): String {
         val time = parseHourTime(value) ?: return value.takeLast(5)
         val pattern = if (timeFormat == TimeFormat.HOUR_24) "HH:mm" else "h a"
-        return time.format(DateTimeFormatter.ofPattern(pattern, Locale.getDefault()))
+        return time.format(DateTimeFormatter.ofPattern(pattern, locale))
     }
+
+    private fun appLocale(context: Context): Locale =
+        context.resources.configuration.locales[0]
 
     private fun parseHourTime(value: String): LocalDateTime? =
         runCatching { LocalDateTime.parse(value) }.getOrNull()

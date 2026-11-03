@@ -16,7 +16,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doAfterTextChanged
@@ -82,6 +84,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var colorPreview: View
     private lateinit var colorHex: TextView
     private lateinit var widgetPreview: FrameLayout
+    private lateinit var languageGroup: MaterialButtonToggleGroup
 
     private var bindingMode = false
     private var bindingColor = false
@@ -124,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         renderState()
         startInitialWork()
         WeatherUpdateScheduler.syncWithWidgets(this)
+        WidgetUpdater.updateAll(this)
     }
 
     override fun onDestroy() {
@@ -152,6 +156,7 @@ class MainActivity : AppCompatActivity() {
         colorPreview = findViewById(R.id.color_preview)
         colorHex = findViewById(R.id.color_hex)
         widgetPreview = findViewById(R.id.widget_preview_container)
+        languageGroup = findViewById(R.id.language_group)
     }
 
     private fun bindActions() {
@@ -179,6 +184,12 @@ class MainActivity : AppCompatActivity() {
             onForecastModeSelected(
                 if (checkedId == R.id.forecast_daily) ForecastMode.DAILY else ForecastMode.HOURLY
             )
+        }
+
+        languageGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (bindingMode || !isChecked) return@addOnButtonCheckedListener
+
+            onLanguageSelected(checkedId)
         }
 
         val colorSliders = listOf(hueSlider, saturationSlider, brightnessSlider)
@@ -255,6 +266,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.forecast_hourly
             }
         )
+        languageGroup.check(currentLanguageButton())
         val opacity = preferences.widgetBackgroundOpacity
         opacitySlider.value = opacity.toFloat()
         opacityValue.text = getString(R.string.opacity_value_format, opacity)
@@ -349,6 +361,32 @@ class MainActivity : AppCompatActivity() {
         WidgetUpdater.updateAll(this)
         renderPreview()
     }
+
+    private fun currentLanguageButton(): Int {
+        val tags = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+        return when {
+            tags.startsWith("it") -> R.id.language_italian
+            tags.startsWith("en") -> R.id.language_english
+            else -> R.id.language_system
+        }
+    }
+
+    private fun onLanguageSelected(checkedId: Int) {
+        val locales = when (checkedId) {
+            R.id.language_italian -> LocaleListCompat.forLanguageTags("it")
+            R.id.language_english -> LocaleListCompat.forLanguageTags("en")
+            else -> LocaleListCompat.getEmptyLocaleList()
+        }
+
+        if (AppCompatDelegate.getApplicationLocales().toLanguageTags() !=
+            locales.toLanguageTags()
+        ) {
+            preferences.clearLastError()
+            AppCompatDelegate.setApplicationLocales(locales)
+        }
+    }
+
+    private fun appLocale(): Locale = resources.configuration.locales[0]
 
     private fun renderColorSwatches() {
         colorSwatches.removeAllViews()
@@ -496,7 +534,7 @@ class MainActivity : AppCompatActivity() {
         citySearchJob = scope.launch {
             delay(AUTOCOMPLETE_DEBOUNCE_MS.milliseconds)
 
-            val cacheKey = query.lowercase(Locale.ROOT)
+            val cacheKey = "${appLocale().language}:${query.lowercase(Locale.ROOT)}"
             val cached = citySearchCache.get(cacheKey)
             if (cached != null) {
                 if (currentCityQuery() == query) {
@@ -506,7 +544,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             try {
-                val results = openMeteoClient.searchLocations(query)
+                val results = openMeteoClient.searchLocations(query, appLocale().language)
                 citySearchCache.put(cacheKey, results)
                 if (currentCityQuery() == query) {
                     showSearchResults(results)
@@ -540,9 +578,9 @@ class MainActivity : AppCompatActivity() {
 
         scope.launch {
             try {
-                val cacheKey = query.lowercase(Locale.ROOT)
+                val cacheKey = "${appLocale().language}:${query.lowercase(Locale.ROOT)}"
                 val results = citySearchCache.get(cacheKey)
-                    ?: openMeteoClient.searchLocations(query).also { fetched ->
+                    ?: openMeteoClient.searchLocations(query, appLocale().language).also { fetched ->
                         citySearchCache.put(cacheKey, fetched)
                     }
                 showSearchResults(results)
@@ -739,7 +777,7 @@ class MainActivity : AppCompatActivity() {
             "d MMM yyyy, h:mm a"
         }
 
-        return SimpleDateFormat(pattern, Locale.getDefault()).format(Date(epochMillis))
+        return SimpleDateFormat(pattern, appLocale()).format(Date(epochMillis))
     }
 
     private fun hideKeyboard() {

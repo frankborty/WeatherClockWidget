@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import java.util.Locale
 import kotlin.coroutines.resume
 
 /**
@@ -87,7 +86,10 @@ class LocationProvider(context: Context) {
             withContext(Dispatchers.IO) {
                 if (!Geocoder.isPresent()) return@withContext null
 
-                val geocoder = Geocoder(appContext, Locale.getDefault())
+                val geocoder = Geocoder(
+                    appContext,
+                    appContext.resources.configuration.locales[0]
+                )
                 suspendCancellableCoroutine { continuation ->
                     geocoder.getFromLocation(
                         latitude,

@@ -26,6 +26,7 @@ Issue, segnalazioni e pull request possono non essere lette, gestite o accettate
 - Tap su qualsiasi altra area del widget: apertura delle impostazioni dell'app.
 - Previsioni per le prossime ore oppure per i prossimi giorni, selezionabili nelle impostazioni.
 - Previsioni giornaliere con temperatura minima e massima.
+- Interfaccia disponibile in italiano e inglese, con selettore Sistema / Italiano / English. Per impostazione predefinita segue la lingua di sistema.
 - Ricerca città sempre disponibile, con suggerimenti automatici mentre si digita; selezionando un risultato la località viene salvata automaticamente.
 - Interruttore Posizione GPS: imposta località e coordinate dalla posizione del dispositivo. Disattivandolo, la città corrente resta come località manuale. L'attivazione del GPS non forza un aggiornamento meteo.
 - Colore di sfondo personalizzabile con selettore HSV, campioni predefiniti e codice esadecimale.

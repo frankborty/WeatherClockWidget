@@ -30,6 +30,10 @@
     <string name="settings_title">Impostazioni</string>
     <string name="settings_subtitle">Personalizza località e aspetto del widget.</string>
     <string name="location_section_title">Località</string>
+    <string name="language_section_title">Lingua</string>
+    <string name="language_system">Sistema</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_english">English</string>
     <string name="appearance_title">Aspetto</string>
     <string name="preview_label">Anteprima</string>
     <string name="preview_hint">Si aggiorna mentre modifichi le opzioni.</string>

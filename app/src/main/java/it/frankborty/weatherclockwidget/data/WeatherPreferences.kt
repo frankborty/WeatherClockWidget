@@ -132,6 +132,10 @@ class WeatherPreferences(context: Context) {
         }
     }
 
+    fun clearLastError() {
+        preferences.edit { remove(KEY_LAST_ERROR) }
+    }
+
     private fun readLocation(
         nameKey: String,
         latitudeKey: String,
