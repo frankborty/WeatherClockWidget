@@ -287,8 +287,8 @@ object WeatherWidgetRenderer {
                     label = label,
                     temperature = context.getString(
                         R.string.widget_daily_temperature_format,
-                        maxText,
-                        minText
+                        minText,
+                        maxText
                     ),
                     iconRes = WeatherIconResolver.iconRes(day.weatherCode, isDay = true),
                     description = context.getString(
